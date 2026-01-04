@@ -1,6 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 function Pagination({ currentPage, totalPages, totalItems, itemsPerPage, onPageChange }) {
+  const { t } = useTranslation();
+
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
@@ -22,20 +25,24 @@ function Pagination({ currentPage, totalPages, totalItems, itemsPerPage, onPageC
     return pages;
   };
 
-  if (totalPages <= 1) {
+  if (totalPages <= 1 && totalItems > 0) {
     return (
       <div className="pagination">
         <div className="pagination-info">
-          Показано {startItem}-{endItem} из {totalItems}
+          {t('pagination.showing')} {startItem}-{endItem} {t('pagination.of')} {totalItems}
         </div>
       </div>
     );
   }
 
+  if (totalItems === 0) {
+    return null;
+  }
+
   return (
     <div className="pagination">
       <div className="pagination-info">
-        Показано {startItem}-{endItem} из {totalItems}
+        {t('pagination.showing')} {startItem}-{endItem} {t('pagination.of')} {totalItems}
       </div>
 
       <div className="pagination-controls">

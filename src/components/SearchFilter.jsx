@@ -1,20 +1,23 @@
+import { useTranslation } from 'react-i18next';
 import { Search } from 'lucide-react';
 
-const STATUSES = [
-  { value: '', label: 'Все' },
-  { value: 'В работе', label: 'В работе' },
-  { value: 'Решено', label: 'Решено' },
-  { value: 'Отклонено', label: 'Отклонено' }
-];
-
 function SearchFilter({ searchQuery, onSearchChange, statusFilter, onStatusChange }) {
+  const { t } = useTranslation();
+
+  const STATUSES = [
+    { value: '', labelKey: 'filters.all' },
+    { value: 'В работе', labelKey: 'filters.inProgress' },
+    { value: 'Решено', labelKey: 'filters.resolved' },
+    { value: 'Отклонено', labelKey: 'filters.rejected' }
+  ];
+
   return (
     <div className="filters-container">
       <div className="search-input">
         <Search className="search-icon" size={18} />
         <input
           type="text"
-          placeholder="Поиск по категории или адресу..."
+          placeholder={t('search.placeholder')}
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
         />
@@ -27,7 +30,7 @@ function SearchFilter({ searchQuery, onSearchChange, statusFilter, onStatusChang
             className={`filter-btn ${statusFilter === status.value ? 'active' : ''}`}
             onClick={() => onStatusChange(status.value)}
           >
-            {status.label}
+            {t(status.labelKey)}
           </button>
         ))}
       </div>

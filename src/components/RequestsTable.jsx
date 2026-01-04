@@ -1,23 +1,54 @@
-import { FileText } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { FileText, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 import Pagination from './Pagination';
 
-function RequestsTable({ requests, currentPage, totalPages, totalItems, itemsPerPage, onPageChange, onRowClick }) {
+function RequestsTable({
+  requests,
+  currentPage,
+  totalPages,
+  totalItems,
+  itemsPerPage,
+  onPageChange,
+  onRowClick,
+  sortConfig,
+  onSort
+}) {
+  const { t, i18n } = useTranslation();
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('ru-RU', {
+    const locale = i18n.language === 'en' ? 'en-US' : i18n.language === 'kz' ? 'kk-KZ' : 'ru-RU';
+    return date.toLocaleDateString(locale, {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric'
     });
   };
 
+  const getSortIcon = (key) => {
+    if (sortConfig.key !== key) {
+      return <ArrowUpDown size={14} className="sort-icon" />;
+    }
+    return sortConfig.direction === 'asc'
+      ? <ArrowUp size={14} className="sort-icon active" />
+      : <ArrowDown size={14} className="sort-icon active" />;
+  };
+
+  const columns = [
+    { key: 'id', label: t('table.id'), sortable: true },
+    { key: 'category', label: t('table.category'), sortable: true },
+    { key: 'address', label: t('table.address'), sortable: false },
+    { key: 'status', label: t('table.status'), sortable: true },
+    { key: 'created_at', label: t('table.date'), sortable: true }
+  ];
+
   return (
     <div className="card">
       <div className="card-header">
         <h2>
           <FileText size={18} />
-          Обращения граждан
+          {t('table.title')}
         </h2>
       </div>
 
@@ -26,11 +57,18 @@ function RequestsTable({ requests, currentPage, totalPages, totalItems, itemsPer
           <table className="requests-table">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Категория</th>
-                <th>Адрес</th>
-                <th>Статус</th>
-                <th>Дата регистрации</th>
+                {columns.map((col) => (
+                  <th
+                    key={col.key}
+                    className={col.sortable ? 'sortable' : ''}
+                    onClick={() => col.sortable && onSort(col.key)}
+                  >
+                    <span className="th-content">
+                      {col.label}
+                      {col.sortable && getSortIcon(col.key)}
+                    </span>
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
@@ -50,7 +88,7 @@ function RequestsTable({ requests, currentPage, totalPages, totalItems, itemsPer
         ) : (
           <div className="empty-state">
             <FileText size={48} />
-            <p>Обращения не найдены</p>
+            <p>{t('table.empty')}</p>
           </div>
         )}
       </div>

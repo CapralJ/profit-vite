@@ -1,0 +1,58 @@
+{
+  "header": {
+    "title": "Citizen Requests - Astana"
+  },
+  "search": {
+    "placeholder": "Search by category or address..."
+  },
+  "filters": {
+    "all": "All",
+    "inProgress": "In Progress",
+    "resolved": "Resolved",
+    "rejected": "Rejected"
+  },
+  "table": {
+    "title": "Citizen Requests",
+    "id": "ID",
+    "category": "Category",
+    "address": "Address",
+    "status": "Status",
+    "date": "Registration Date",
+    "empty": "No requests found"
+  },
+  "pagination": {
+    "showing": "Showing",
+    "of": "of"
+  },
+  "map": {
+    "title": "Requests Map"
+  },
+  "modal": {
+    "request": "Request",
+    "category": "Category",
+    "address": "Address",
+    "status": "Status",
+    "date": "Date",
+    "coordinates": "Coordinates",
+    "description": "Description"
+  },
+  "stats": {
+    "title": "Statistics",
+    "total": "Total Requests",
+    "inProgress": "In Progress",
+    "resolved": "Resolved",
+    "rejected": "Rejected"
+  },
+  "categories": {
+    "garbage": "Garbage Collection",
+    "lighting": "Street Lighting",
+    "roads": "Road Surface",
+    "improvement": "Landscaping"
+  },
+  "theme": {
+    "light": "Light Theme",
+    "dark": "Dark Theme"
+  },
+  "loading": "Loading data...",
+  "error": "Loading error"
+}

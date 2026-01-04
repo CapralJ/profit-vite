@@ -33,8 +33,30 @@
   background-color: var(--background);
 }
 
+/* Dark theme */
+[data-theme="dark"] {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --card: #1e293b;
+  --card-foreground: #f8fafc;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --secondary: #1e293b;
+  --secondary-foreground: #f8fafc;
+  --muted: #334155;
+  --muted-foreground: #94a3b8;
+  --accent: #334155;
+  --accent-foreground: #f8fafc;
+  --border: #334155;
+  --input: #334155;
+  --ring: #3b82f6;
+}
+
 body {
   min-height: 100vh;
+  background-color: var(--background);
+  color: var(--foreground);
+  transition: background-color 0.3s, color 0.3s;
 }
 
 #root {
@@ -63,4 +85,22 @@ input, select, textarea {
 /* Leaflet overrides */
 .leaflet-container {
   font-family: inherit !important;
+}
+
+/* Dark theme leaflet fixes */
+[data-theme="dark"] .leaflet-popup-content-wrapper,
+[data-theme="dark"] .leaflet-popup-tip {
+  background: var(--card);
+  color: var(--foreground);
+}
+
+[data-theme="dark"] .leaflet-control-zoom a {
+  background: var(--card);
+  color: var(--foreground);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .leaflet-control-attribution {
+  background: rgba(30, 41, 59, 0.8);
+  color: var(--muted-foreground);
 }

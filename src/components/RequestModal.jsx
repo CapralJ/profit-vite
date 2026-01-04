@@ -1,8 +1,11 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X, MapPin, Calendar, Tag, Hash } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 
 function RequestModal({ request, onClose }) {
+  const { t, i18n } = useTranslation();
+
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape') {
@@ -27,7 +30,8 @@ function RequestModal({ request, onClose }) {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('ru-RU', {
+    const locale = i18n.language === 'en' ? 'en-US' : i18n.language === 'kz' ? 'kk-KZ' : 'ru-RU';
+    return date.toLocaleDateString(locale, {
       day: '2-digit',
       month: 'long',
       year: 'numeric'
@@ -40,7 +44,7 @@ function RequestModal({ request, onClose }) {
     <div className="modal-overlay" onClick={handleOverlayClick}>
       <div className="modal-content">
         <div className="modal-header">
-          <h2>Обращение #{request.id}</h2>
+          <h2>{t('modal.request')} #{request.id}</h2>
           <button className="modal-close-btn" onClick={onClose}>
             <X size={20} />
           </button>
@@ -70,7 +74,7 @@ function RequestModal({ request, onClose }) {
             <div className="modal-info-row">
               <span className="modal-info-label">
                 <Tag size={14} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
-                Категория
+                {t('modal.category')}
               </span>
               <span className="modal-info-value">{request.category}</span>
             </div>
@@ -78,13 +82,13 @@ function RequestModal({ request, onClose }) {
             <div className="modal-info-row">
               <span className="modal-info-label">
                 <MapPin size={14} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
-                Адрес
+                {t('modal.address')}
               </span>
               <span className="modal-info-value">{request.address}</span>
             </div>
 
             <div className="modal-info-row">
-              <span className="modal-info-label">Статус</span>
+              <span className="modal-info-label">{t('modal.status')}</span>
               <span className="modal-info-value">
                 <StatusBadge status={request.status} />
               </span>
@@ -93,13 +97,13 @@ function RequestModal({ request, onClose }) {
             <div className="modal-info-row">
               <span className="modal-info-label">
                 <Calendar size={14} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
-                Дата
+                {t('modal.date')}
               </span>
               <span className="modal-info-value">{formatDate(request.created_at)}</span>
             </div>
 
             <div className="modal-info-row">
-              <span className="modal-info-label">Координаты</span>
+              <span className="modal-info-label">{t('modal.coordinates')}</span>
               <span className="modal-info-value">
                 {request.latitude.toFixed(4)}, {request.longitude.toFixed(4)}
               </span>
@@ -107,7 +111,7 @@ function RequestModal({ request, onClose }) {
           </div>
 
           <div className="modal-description">
-            <h4>Описание</h4>
+            <h4>{t('modal.description')}</h4>
             <p>{request.description}</p>
           </div>
         </div>

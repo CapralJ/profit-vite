@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Map } from 'lucide-react';
 import L from 'leaflet';
@@ -37,12 +38,14 @@ const createCustomIcon = (status) => {
 const ASTANA_CENTER = [51.1282, 71.4305];
 
 function MapView({ requests, onMarkerClick }) {
+  const { t } = useTranslation();
+
   return (
     <div className="card">
       <div className="card-header">
         <h2>
           <Map size={18} />
-          Карта обращений
+          {t('map.title')}
         </h2>
       </div>
 
@@ -70,7 +73,7 @@ function MapView({ requests, onMarkerClick }) {
                 <div className="map-popup">
                   <h4>{request.category}</h4>
                   <p><strong>ID:</strong> #{request.id}</p>
-                  <p><strong>Адрес:</strong> {request.address}</p>
+                  <p><strong>{t('modal.address')}:</strong> {request.address}</p>
                   <p><StatusBadge status={request.status} /></p>
                 </div>
               </Popup>

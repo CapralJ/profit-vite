@@ -1,14 +1,20 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ClipboardList } from 'lucide-react';
 import SearchFilter from './components/SearchFilter';
 import RequestsTable from './components/RequestsTable';
 import MapView from './components/MapView';
 import RequestModal from './components/RequestModal';
+import Statistics from './components/Statistics';
+import LanguageSwitcher from './components/LanguageSwitcher';
+import ThemeToggle from './components/ThemeToggle';
 import './App.css';
 
 const ITEMS_PER_PAGE = 10;
 
 function App() {
+  const { t } = useTranslation();
+
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,6 +23,7 @@ function App() {
   const [statusFilter, setStatusFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [sortConfig, setSortConfig] = useState({ key: 'id', direction: 'asc' });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,16 +57,49 @@ function App() {
     });
   }, [requests, searchQuery, statusFilter]);
 
+  const sortedRequests = useMemo(() => {
+    const sorted = [...filteredRequests];
+
+    sorted.sort((a, b) => {
+      let aValue = a[sortConfig.key];
+      let bValue = b[sortConfig.key];
+
+      if (sortConfig.key === 'created_at') {
+        aValue = new Date(aValue);
+        bValue = new Date(bValue);
+      }
+
+      if (sortConfig.key === 'status') {
+        const statusOrder = { 'В работе': 1, 'Решено': 2, 'Отклонено': 3 };
+        aValue = statusOrder[aValue] || 0;
+        bValue = statusOrder[bValue] || 0;
+      }
+
+      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    return sorted;
+  }, [filteredRequests, sortConfig]);
+
   const paginatedRequests = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredRequests.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-  }, [filteredRequests, currentPage]);
+    return sortedRequests.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [sortedRequests, currentPage]);
 
-  const totalPages = Math.ceil(filteredRequests.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(sortedRequests.length / ITEMS_PER_PAGE);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, statusFilter]);
+
+  const handleSort = (key) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc'
+    }));
+  };
 
   const handleRowClick = (request) => {
     setSelectedRequest(request);
@@ -78,7 +118,7 @@ function App() {
       <div className="app">
         <div className="app-content">
           <div className="empty-state">
-            <p>Загрузка данных...</p>
+            <p>{t('loading')}</p>
           </div>
         </div>
       </div>
@@ -90,7 +130,7 @@ function App() {
       <div className="app">
         <div className="app-content">
           <div className="empty-state">
-            <p>Ошибка загрузки: {error}</p>
+            <p>{t('error')}: {error}</p>
           </div>
         </div>
       </div>
@@ -102,11 +142,17 @@ function App() {
       <header className="app-header">
         <h1>
           <ClipboardList size={28} />
-          Обращения граждан г. Астана
+          {t('header.title')}
         </h1>
+        <div className="header-controls">
+          <LanguageSwitcher />
+          <ThemeToggle />
+        </div>
       </header>
 
       <main className="app-content">
+        <Statistics requests={requests} />
+
         <div className="main-layout">
           <div className="left-panel">
             <div className="card">
@@ -124,10 +170,12 @@ function App() {
               requests={paginatedRequests}
               currentPage={currentPage}
               totalPages={totalPages}
-              totalItems={filteredRequests.length}
+              totalItems={sortedRequests.length}
               itemsPerPage={ITEMS_PER_PAGE}
               onPageChange={setCurrentPage}
               onRowClick={handleRowClick}
+              sortConfig={sortConfig}
+              onSort={handleSort}
             />
           </div>
 
